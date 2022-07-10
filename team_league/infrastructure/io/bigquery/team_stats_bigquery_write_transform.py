@@ -1,4 +1,5 @@
 import dataclasses
+from datetime import datetime
 from typing import Dict
 
 import apache_beam as beam
@@ -28,4 +29,7 @@ class TeamStatsBigqueryWriteTransform(PTransform):
                     create_disposition=beam.io.BigQueryDisposition.CREATE_NEVER))
 
     def to_team_stats_bq(self, team_stats: TeamStats) -> Dict:
-        return dataclasses.asdict(team_stats)
+        team_stats_as_dict = dataclasses.asdict(team_stats)
+        team_stats_as_dict.update({'ingestionDate': datetime.utcnow().isoformat()})
+
+        return team_stats_as_dict
