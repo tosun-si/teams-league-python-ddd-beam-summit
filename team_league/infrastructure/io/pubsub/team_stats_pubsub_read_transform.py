@@ -20,12 +20,13 @@ class TeamStatsPubSubReadTransform(PTransform):
 
     def expand(self, inputs: PBegin):
         return (inputs |
-                'Read team stats from pub sub' >> ReadFromPubSub(topic=self.pipeline_options.input_subscription) |
-                'Map str message to Dict' >> beam.Map(self.to_dict) |
+                'Read team stats from pub sub' >> ReadFromPubSub(
+                    subscription=self.pipeline_options.input_subscription) |
+                'Map bytes message to Dict' >> beam.Map(self.to_dict) |
                 'Deserialize Dict to domain dataclass' >> beam.Map(self.deserialize))
 
-    def to_dict(self, team_stats_raw_as_str: str) -> Dict:
-        return json.loads(team_stats_raw_as_str)
+    def to_dict(self, team_stats_raw: bytes) -> Dict:
+        return json.loads(team_stats_raw.decode('utf-8'))
 
     def deserialize(self, team_stats_raw_as_dict: Dict) -> TeamStatsRaw:
         return from_dict(

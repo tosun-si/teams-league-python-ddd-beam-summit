@@ -1,3 +1,4 @@
+import json
 from typing import Dict
 
 import apache_beam as beam
@@ -20,7 +21,11 @@ class TeamStatsJsonFileReadTransform(PTransform):
     def expand(self, inputs: PBegin):
         return (inputs |
                 'Read Json file' >> ReadFromText(self.pipeline_options.input_json_file) |
+                'Map str message to Dict' >> beam.Map(self.to_dict) |
                 'Deserialize to domain dataclass' >> beam.Map(self.deserialize))
+
+    def to_dict(self, team_stats_raw_as_str: str) -> Dict:
+        return json.loads(team_stats_raw_as_str)
 
     def deserialize(self, team_stats_raw_as_dict: Dict) -> TeamStatsRaw:
         return from_dict(
