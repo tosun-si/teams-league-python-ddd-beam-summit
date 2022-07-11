@@ -3,14 +3,14 @@ import logging
 import apache_beam as beam
 from apache_beam.options.pipeline_options import PipelineOptions
 
-from team_league.application.team_league_options import TeamLeagueNamesOptions
+from team_league.application.team_league_options import TeamLeagueOptions
 from team_league.injection.containers import Adapters, Pipeline
 
 
 def main() -> None:
     logging.getLogger().setLevel(logging.INFO)
 
-    team_league_options = PipelineOptions().view_as(TeamLeagueNamesOptions)
+    team_league_options = PipelineOptions().view_as(TeamLeagueOptions)
     pipeline_options = PipelineOptions()
 
     with beam.Pipeline(options=pipeline_options) as p:
