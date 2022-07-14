@@ -7,20 +7,20 @@ from apache_beam.io import ReadFromText
 from apache_beam.pvalue import PBegin
 from dacite import from_dict
 
-from team_league.application.team_league_options import TeamLeagueOptions
+from team_league.application.pipeline_conf import PipelineConf
 from team_league.domain.team_stats_raw import TeamStatsRaw
 
 
 class TeamStatsJsonFileReadTransform(PTransform):
 
     def __init__(self,
-                 pipeline_options: TeamLeagueOptions):
+                 pipeline_conf: PipelineConf):
         super().__init__()
-        self.pipeline_options = pipeline_options
+        self.pipeline_conf = pipeline_conf
 
     def expand(self, inputs: PBegin):
         return (inputs |
-                'Read Json file' >> ReadFromText(self.pipeline_options.input_json_file) |
+                'Read Json file' >> ReadFromText(self.pipeline_conf.input_json_file) |
                 'Map str message to Dict' >> beam.Map(self.to_dict) |
                 'Deserialize to domain dataclass' >> beam.Map(self.deserialize))
 

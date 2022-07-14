@@ -1,6 +1,6 @@
 from apache_beam import PTransform
 
-from team_league.domain_transform.team_stats_topic_io_connector import TeamStatsTopicIOConnector
+from team_league.domain_ptransform.team_stats_topic_io_connector import TeamStatsTopicIOConnector
 from team_league.infrastructure.io.pubsub.team_stats_pubsub_read_transform import TeamStatsPubSubReadTransform
 
 

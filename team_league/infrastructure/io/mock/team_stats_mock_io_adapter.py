@@ -1,6 +1,6 @@
 from apache_beam import PTransform
 
-from team_league.domain_transform.team_stats_inmemory_io_connector import TeamStatsInMemoryIOConnector
+from team_league.domain_ptransform.team_stats_inmemory_io_connector import TeamStatsInMemoryIOConnector
 from team_league.infrastructure.io.mock.team_stats_mock_read_transform import TeamStatsMockReadTransform
 
 

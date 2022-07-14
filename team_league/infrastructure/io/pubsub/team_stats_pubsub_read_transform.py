@@ -7,21 +7,21 @@ from apache_beam.io import ReadFromPubSub
 from apache_beam.pvalue import PBegin
 from dacite import from_dict
 
-from team_league.application.team_league_options import TeamLeagueOptions
+from team_league.application.pipeline_conf import PipelineConf
 from team_league.domain.team_stats_raw import TeamStatsRaw
 
 
 class TeamStatsPubSubReadTransform(PTransform):
 
     def __init__(self,
-                 pipeline_options: TeamLeagueOptions):
+                 pipeline_conf: PipelineConf):
         super().__init__()
-        self.pipeline_options = pipeline_options
+        self.pipeline_conf = pipeline_conf
 
     def expand(self, inputs: PBegin):
         return (inputs |
                 'Read team stats from pub sub' >> ReadFromPubSub(
-                    subscription=self.pipeline_options.input_subscription) |
+                    subscription=self.pipeline_conf.input_subscription) |
                 'Map bytes message to Dict' >> beam.Map(self.to_dict) |
                 'Deserialize Dict to domain dataclass' >> beam.Map(self.deserialize))
 

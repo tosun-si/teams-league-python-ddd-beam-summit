@@ -11,43 +11,47 @@ from team_league.infrastructure.io.pubsub.team_stats_pubsub_io_adapter import Te
 from team_league.infrastructure.io.pubsub.team_stats_pubsub_read_transform import TeamStatsPubSubReadTransform
 
 
-class Adapters(containers.DeclarativeContainer):
-    pipeline_options = providers.Configuration()
+class IOTransforms(containers.DeclarativeContainer):
+    config = providers.Configuration()
 
     read_teams_stats_inmemory_transform = providers.Singleton(TeamStatsMockReadTransform)
     read_teams_stats_file_transform = providers.Singleton(TeamStatsJsonFileReadTransform,
-                                                          pipeline_options=pipeline_options)
+                                                          pipeline_conf=config)
     read_teams_stats_topic_transform = providers.Singleton(TeamStatsPubSubReadTransform,
-                                                           pipeline_options=pipeline_options)
+                                                           pipeline_conf=config)
 
     write_team_stats_database_transform = providers.Singleton(TeamStatsBigqueryWriteTransform,
-                                                              pipeline_options=pipeline_options)
+                                                              pipeline_conf=config)
+
+
+class Adapters(containers.DeclarativeContainer):
+    io_transforms = providers.DependenciesContainer()
 
     team_stats_inmemory_io_connector = providers.Singleton(
         TeamStatsMockIOAdapter,
-        read_transform=read_teams_stats_inmemory_transform)
+        read_transform=io_transforms.read_teams_stats_inmemory_transform)
 
     team_stats_file_io_connector = providers.Singleton(
         TeamStatsJsonFileIOAdapter,
-        read_transform=read_teams_stats_file_transform)
+        read_transform=io_transforms.read_teams_stats_file_transform)
 
     team_stats_topic_io_connector = providers.Singleton(
         TeamStatsPubSubIOAdapter,
-        read_transform=read_teams_stats_topic_transform)
+        read_transform=io_transforms.read_teams_stats_topic_transform)
 
     team_stats_database_io_connector = providers.Singleton(
         TeamStatsBigqueryIOAdapter,
-        write_transform=write_team_stats_database_transform)
+        write_transform=io_transforms.write_team_stats_database_transform)
 
 
 class Pipeline(containers.DeclarativeContainer):
-    pipeline_options = providers.Configuration()
+    config = providers.Configuration()
 
     adapters = providers.DependenciesContainer()
 
     compose_pipeline = providers.Factory(
         TeamLeaguePipelineComposer,
-        pipeline_options=pipeline_options,
+        pipeline_conf=config,
         team_stats_inmemory_io_connector=adapters.team_stats_inmemory_io_connector,
         team_stats_database_io_connector=adapters.team_stats_database_io_connector,
         team_stats_file_io_connector=adapters.team_stats_file_io_connector,

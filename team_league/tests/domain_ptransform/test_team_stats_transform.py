@@ -12,7 +12,7 @@ from toolz.curried import pipe, map
 from team_league.domain.exception.team_stats_validation_exception import TeamStatsValidationException
 from team_league.domain.team_stats import TeamStats
 from team_league.domain.team_stats_raw import TeamStatsRaw, TEAM_NAME_EMPTY_ERROR
-from team_league.domain_transform.team_stats_transform import TeamStatsTransform
+from team_league.domain_ptransform.team_stats_transform import TeamStatsTransform
 from team_league.root import ROOT_DIR
 from team_league.tests.testing_helper import log_element, load_file_as_dict
 

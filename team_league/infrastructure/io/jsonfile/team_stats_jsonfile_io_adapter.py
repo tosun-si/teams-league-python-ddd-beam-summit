@@ -1,6 +1,6 @@
 from apache_beam import PTransform
 
-from team_league.domain_transform.team_stats_file_io_connector import TeamStatsFileIOConnector
+from team_league.domain_ptransform.team_stats_file_io_connector import TeamStatsFileIOConnector
 from team_league.infrastructure.io.jsonfile.team_stats_jsonfile_read_transform import TeamStatsJsonFileReadTransform
 
 
