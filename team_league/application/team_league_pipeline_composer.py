@@ -34,7 +34,7 @@ class TeamLeaguePipelineComposer:
 
     def compose(self, pipeline: Pipeline) -> Pipeline:
         (pipeline
-         | 'Read team stats' >> self.team_stats_topic_io_connector.read_team_stats()
+         | 'Read team stats' >> self.team_stats_file_io_connector.read_team_stats()
          | 'Team stats domain transform' >> TeamStatsTransform()
          | 'Write team stats to db' >> self.team_stats_database_io_connector.write_team_stats())
 
